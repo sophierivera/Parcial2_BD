@@ -1,53 +1,39 @@
 # ETLProject
 
 ## Descripción
-Este proyecto implementa un pipeline ETL (Extract, Transform, Load) para procesar y limpiar datos de viajes de Uber, utilizando el dataset disponible en Kaggle: [Uber Ride Analytics Dashboard](https://www.kaggle.com/datasets/yashdevladdha/uber-ride-analytics-dashboard).
-
-El objetivo es extraer los datos crudos, transformarlos mediante limpieza y normalización, y cargarlos en un archivo listo para análisis.
+Este proyecto implementa un pipeline ETL (Extract, Transform, Load) para analizar resultados de partidos de fútbol y generar visualizaciones con Seaborn y Matplotlib.
 
 ## Estructura del Proyecto
 
-```
-ETLProject/
-├── Extract/
-│   └── extractor.py
-├── Transform/
-│   └── transformer.py
-├── Load/
-│   └── loader.py
-├── Config/
-│   └── config.py
+Trabajo4/
+│── Config/      
+│── Extract/      
+│── Transform/      
+│── Load/           
+│── Visualize/    
+│── main.py         
+│── requirements.txt
+│── README.md
+
 ```
 
 ## Uso del DataFrame
-El archivo principal de datos es `ncr_ride_bookings.csv`, que contiene información sobre reservas de viajes, cancelaciones, valoraciones, métodos de pago y más.
+El archivo principal de datos es results.csv, que contiene información sobre partidos de fútbol internacionales, incluyendo torneos, equipos, resultados y condiciones del partido.
 
 ### Columnas principales:
-- Date: Fecha de la reserva
-- Time: Hora de la reserva
-- Booking ID: Identificador único de la reserva
-- Booking Status: Estado de la reserva (Completada, Cancelada, etc.)
-- Customer ID: Identificador del cliente
-- Vehicle Type: Tipo de vehículo
-- Pickup Location: Origen
-- Drop Location: Destino
-- Avg VTAT: Tiempo promedio de llegada del vehículo
-- Avg CTAT: Tiempo promedio de llegada del cliente
-- Cancelled Rides by Customer: Cancelación por cliente
-- Reason for cancelling by Customer: Motivo de cancelación por cliente
-- Cancelled Rides by Driver: Cancelación por conductor
-- Driver Cancellation Reason: Motivo de cancelación por conductor
-- Incomplete Rides: Viaje incompleto
-- Incomplete Rides Reason: Motivo de viaje incompleto
-- Booking Value: Monto total del viaje
-- Ride Distance: Distancia recorrida (km)
-- Driver Ratings: Calificación al conductor
-- Customer Rating: Calificación del cliente
-- Payment Method: Método de pago
+- date: Fecha del partido
+- home_team: Equipo local
+- away_team: Equipo visitante
+- home_score: Goles anotados por el equipo local
+- away_score: Goles anotados por el equipo visitante
+- tournament: Nombre del torneo
+- city: Ciudad donde se jugó el partido
+- country: País donde se jugó el partido
+- neutral: Indica si el partido fue en campo neutral (True / False)
 
 ## Ejecución del pipeline ETL
-1. Ajusta las rutas de entrada y salida en `Config/config.py` si es necesario.
-2. Ejecuta el flujo ETL desde un script principal:
+1. Ajusta las rutas de entrada y salida en Config/config.py si es necesario.
+2. Ejecuta el flujo ETL desde el script principal main.py o manualmente con:
 
 ```python
 from Config.config import Config
@@ -55,15 +41,22 @@ from Extract.extractor import Extractor
 from Transform.transformer import Transformer
 from Load.loader import Loader
 
+# 1. Extraer datos
 extractor = Extractor(Config.INPUT_PATH)
 df = extractor.extract()
+
+# 2. Transformar datos
 transformer = Transformer(df)
 df_clean = transformer.clean()
+
+# 3. Cargar datos
 loader = Loader(df_clean)
-loader.to_csv(Config.OUTPUT_PATH)
+loader.to_csv(Config.OUTPUT_PATH)          # Guarda el CSV limpio
+loader.to_sqlite(Config.SQLITE_DB_PATH)    # Guarda en SQLite
+
 ```
 
 Esto generará un archivo limpio listo para análisis o visualización.
 
 ## Fuente de datos
-Dataset original: [Uber Ride Analytics Dashboard - Kaggle](https://www.kaggle.com/datasets/yashdevladdha/uber-ride-analytics-dashboard)
+Dataset original: [Resultados de futbol entre 1872 y 2017 - Kaggle](https://www.kaggle.com/datasets/ramnquintana/resultados-de-futbol-entre-1872-y-2017?resource=download)
