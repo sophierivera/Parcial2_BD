@@ -1,71 +1,54 @@
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 
-def create_plots(csv_path="Extract/Files/results_clean.csv", output_dir="Visualize"):
-    # Cargar datos
-    df = pd.read_csv(csv_path)
+# Configuración de estilo pastel
+sns.set_palette("pastel")
+sns.set_style("whitegrid")
 
-    # Crear carpeta si no existe
-    os.makedirs(output_dir, exist_ok=True)
-    
-    sns.set_palette("pastel")
-    plt.style.use("seaborn-v0_8-whitegrid")
+# Crear carpeta de salida
+output_dir = "Visualize/Plots"
+os.makedirs(output_dir, exist_ok=True)
 
-    # === 1. Promedio de goles por torneo ===
-    df["total_goals"] = df["home_score"] + df["away_score"]
-    avg_goals_tournament = (
-        df.groupby("tournament")["total_goals"]
-        .mean()
-        .sort_values(ascending=False)
-        .head(10)
-    )
+# Cargar dataset limpio
+df = pd.read_csv("Extract/Files/results_clean.csv")
 
-    plt.figure(figsize=(10, 6))
-    sns.barplot(
-        x=avg_goals_tournament.values,
-        y=avg_goals_tournament.index,
-        palette="pastel"
-    )
-    plt.title("Promedio de goles por torneo (Top 10)", fontsize=14, weight="bold")
-    plt.xlabel("Promedio de goles")
-    plt.ylabel("Torneo")
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, "avg_goals_tournament.png"))
-    plt.close()
+# -------------------- 📊 Gráfica 1: Cantidad de registros por tipo de vehículo --------------------
+plt.figure(figsize=(8, 5))
+sns.countplot(data=df, x="vehicle_type")
+plt.title("Cantidad de viajes por tipo de vehículo")
+plt.xlabel("Tipo de vehículo")
+plt.ylabel("Cantidad de viajes")
+plt.xticks(rotation=20)
+plt.tight_layout()
+plt.savefig(f"{output_dir}/viajes_por_tipo.png")
+plt.close()
 
-    # === 2. Cantidad de partidos por país ===
-    matches_country = df["country"].value_counts().head(10)
+# -------------------- 📊 Gráfica 2: Promedio de tarifa por ciudad --------------------
+avg_fare = df.groupby("city")["fare_amount"].mean().reset_index()
 
-    plt.figure(figsize=(10, 6))
-    sns.barplot(
-        x=matches_country.values,
-        y=matches_country.index,
-        palette="pastel"
-    )
-    plt.title("Cantidad de partidos por país (Top 10)", fontsize=14, weight="bold")
-    plt.xlabel("Cantidad de partidos")
-    plt.ylabel("País")
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, "matches_by_country.png"))
-    plt.close()
+plt.figure(figsize=(8, 5))
+sns.barplot(data=avg_fare, x="city", y="fare_amount")
+plt.title("Promedio de tarifa por ciudad")
+plt.xlabel("Ciudad")
+plt.ylabel("Tarifa promedio")
+plt.xticks(rotation=20)
+plt.tight_layout()
+plt.savefig(f"{output_dir}/promedio_tarifa_ciudad.png")
+plt.close()
 
-    # === 3. Partidos neutrales vs. no neutrales ===
-    neutral_counts = df["neutral"].value_counts()
+# -------------------- 📊 Gráfica 3: Distancia vs Tarifa --------------------
+plt.figure(figsize=(8, 5))
+sns.scatterplot(data=df, x="distance_km", y="fare_amount", alpha=0.6)
+plt.title("Relación entre distancia y tarifa")
+plt.xlabel("Distancia (km)")
+plt.ylabel("Tarifa ($)")
+plt.tight_layout()
+plt.savefig(f"{output_dir}/distancia_vs_tarifa.png")
+plt.close()
 
-    plt.figure(figsize=(6, 6))
-    plt.pie(
-        neutral_counts,
-        labels=["No Neutral", "Neutral"],
-        autopct="%1.1f%%",
-        colors=sns.color_palette("pastel"),
-        startangle=90
-    )
-    plt.title("Distribución de partidos: neutrales vs. no neutrales", fontsize=14, weight="bold")
-    plt.savefig(os.path.join(output_dir, "neutral_matches.png"))
-    plt.close()
+print(f"✅ Gráficas generadas en {output_dir}")
 
-    print(f"Gráficas pastel guardadas en {output_dir}/")
 
 

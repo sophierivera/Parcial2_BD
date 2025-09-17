@@ -2,6 +2,7 @@ from Config.config import Config
 from Extract.extractor import Extractor
 from Transform.transformer import Transformer
 from Load.loader import Loader
+from Visualize.plots import create_plots   # 👈 importamos las gráficas
 
 def main():
     # Extraer datos
@@ -16,8 +17,16 @@ def main():
         # Cargar datos
         loader = Loader(cleaned_data)
         loader.to_sqlite()
+
+        # ✅ Guardar también el CSV limpio
+        loader.to_csv("Extract/Files/results_clean.csv")
+
+        # ✅ Generar las gráficas
+        create_plots("Extract/Files/results_clean.csv")
     else:
         print("No se pudo extraer el archivo de datos.")
 
 if __name__ == "__main__":
     main()
+
+
