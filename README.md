@@ -62,7 +62,7 @@ Las gráficas se guardan automáticamente en la carpeta `Visualize/Plots/`.
 
 1. Clona este repositorio o descárgalo localmente:
    ```bash
-   git clone https://github.com/usuario/Trabajo4-Deportes.git
+   git clone https://github.com/usuario/P2.git
    ```
 
 2. Instala las dependencias necesarias:
