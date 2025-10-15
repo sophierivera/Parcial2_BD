@@ -6,11 +6,8 @@ class Extractor:
         self.file_path = file_path
 
     def extract(self):
-        """
-        Extrae los datos del archivo especificado,
-        probando diferentes codificaciones si es necesario.
-        """
         import pandas as pd
+
 
         encodings = ['utf-8', 'latin-1', 'ISO-8859-1', 'cp1252']
 
