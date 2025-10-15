@@ -1,9 +1,7 @@
 import pandas as pd
 
 class Transformer:
-    """
-    Clase para transformar y limpiar los datos de titulares de noticias.
-    """
+    
     def __init__(self, df):
         self.df = df
 

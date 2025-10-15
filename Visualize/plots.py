@@ -20,7 +20,7 @@ def create_plots(output_path=None):
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     df = df.dropna(subset=["Date"])
 
-    # --- 1. Distribución de etiquetas ---
+    # - 1. Distribución de etiquetas -
     plt.figure(figsize=(6, 4))
     sns.countplot(data=df, x="Label", hue="Label", palette="pastel", legend=False)
     plt.title("Distribución de sentimientos")
@@ -30,7 +30,7 @@ def create_plots(output_path=None):
     plt.savefig(f"{output_dir}/01_distribucion_etiquetas.png")
     plt.close()
 
-    # --- 2. Promedio de titulares por trimestre ---
+    # - 2. Promedio de titulares por trimestre -
     df["num_headlines"] = df[[col for col in df.columns if col.startswith("Top")]].notnull().sum(axis=1)
     headlines_per_date = df.groupby(pd.Grouper(key="Date", freq="QE"))["num_headlines"].mean().reset_index()
 
@@ -44,7 +44,7 @@ def create_plots(output_path=None):
     plt.savefig(f"{output_dir}/02_titulares_trimestre.png")
     plt.close()
 
-    # --- 3. Longitud promedio de titulares ---
+    # - 3. Longitud promedio de titulares -
     top_cols = [col for col in df.columns if col.startswith("Top")]
     df["avg_title_length"] = df[top_cols].apply(
         lambda row: sum(len(str(x).split()) for x in row if isinstance(x, str) and x.strip()) / 
@@ -63,7 +63,7 @@ def create_plots(output_path=None):
     plt.savefig(f"{output_dir}/03_longitud_titulares.png")
     plt.close()
 
-    # --- 4. Tendencia de sentimiento (suavizada) ---
+    # - 4. Tendencia de sentimiento (suavizada) -
     sentiment_trend = (
         df.groupby([pd.Grouper(key="Date", freq="QE"), "Label"]).size().reset_index(name="count")
     )
@@ -78,7 +78,7 @@ def create_plots(output_path=None):
     plt.savefig(f"{output_dir}/04_tendencia_sentimiento.png")
     plt.close()
 
-    # --- 5. Comparación titulares vs longitud ---
+    # - 5. Comparación titulares vs longitud -
     merged = pd.merge(headlines_per_date, title_length_per_date, on="Date")
     plt.figure(figsize=(9, 5))
     ax1 = plt.gca()
