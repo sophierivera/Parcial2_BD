@@ -3,18 +3,13 @@ import sqlite3
 import os
 
 class Loader:
-    """
-    Clase para cargar los datos limpios a un destino.
-    """
+
     def __init__(self, df):
         self.df = df
 
     def to_csv(self, output_path):
-        """
-        Guarda el DataFrame limpio en un archivo CSV.
-        """
         try:
-            # Crear la carpeta si no existe
+            
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
             self.df.to_csv(output_path, index=False)
@@ -23,9 +18,7 @@ class Loader:
             print(f"Error al guardar datos: {e}")
 
     def to_sqlite(self, db_path=None, table_name=None):
-        """
-        Guarda el DataFrame limpio en una base de datos SQLite.
-        """
+        
         db_path = db_path or Config.SQLITE_DB_PATH
         table_name = table_name or Config.SQLITE_TABLE
         try:
