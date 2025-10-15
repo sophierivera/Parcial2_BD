@@ -1,62 +1,95 @@
-# ETLProject
+# Análisis de Sentimiento de Noticias Financieras – DJIA Stock
 
-## Descripción
-Este proyecto implementa un pipeline ETL (Extract, Transform, Load) para analizar resultados de partidos de fútbol y generar visualizaciones con Seaborn y Matplotlib.
+## Descripción General
+
+Este proyecto realiza un análisis de sentimiento sobre titulares de noticias relacionados con el índice **Dow Jones Industrial Average (DJIA)**.  
+El objetivo es analizar cómo los sentimientos expresados en los medios financieros pueden reflejarse en la evolución del mercado bursátil.
+
+El proyecto implementa un proceso **ETL (Extracción, Transformación y Carga)** para limpiar, analizar y visualizar los datos del conjunto de noticias financieras.
+
+---
 
 ## Estructura del Proyecto
 
-Trabajo4/
-│── Config/      
-│── Extract/      
-│── Transform/      
-│── Load/           
-│── Visualize/    
-│── main.py         
-│── requirements.txt
-│── README.md
-
+```
+P2/
+│
+├── Config/
+│   └── config.py
+│
+├── Extract/
+│   ├── loader.py
+│   └── Files/
+│       ├── stock_sentiment_analysis.csv
+│       └── stock_senti_analysis_clean.csv
+│
+├── Transform/
+│   └── cleaner.py
+│
+├── Visualize/
+│   └── plots.py
+│
+├── main.py
+└── README.md
 ```
 
-## Uso del DataFrame
-El archivo principal de datos es results.csv, que contiene información sobre partidos de fútbol internacionales, incluyendo torneos, equipos, resultados y condiciones del partido.
+---
 
-### Columnas principales:
-- date: Fecha del partido
-- home_team: Equipo local
-- away_team: Equipo visitante
-- home_score: Goles anotados por el equipo local
-- away_score: Goles anotados por el equipo visitante
-- tournament: Nombre del torneo
-- city: Ciudad donde se jugó el partido
-- country: País donde se jugó el partido
-- neutral: Indica si el partido fue en campo neutral (True / False)
+## Descripción del Proceso ETL
 
-## Ejecución del pipeline ETL
-1. Ajusta las rutas de entrada y salida en Config/config.py si es necesario.
-2. Ejecuta el flujo ETL desde el script principal main.py o manualmente con:
+### 1. Extracción
+Se lee el archivo fuente `stock_sentiment_analysis.csv` (dataset de Kaggle: *Sentiment Analysis for DJIA Stock*).  
+El proceso detecta automáticamente la codificación correcta del archivo para evitar errores de lectura.
 
-```python
-from Config.config import Config
-from Extract.extractor import Extractor
-from Transform.transformer import Transformer
-from Load.loader import Loader
+### 2. Transformación
+- Limpieza de valores nulos y duplicados.  
+- Conversión de la columna de fecha (`Date`) al formato estándar de `datetime`.  
+- Normalización de etiquetas de sentimiento (`Label`).  
+- Cálculo de métricas adicionales como la longitud promedio de titulares.  
+- Generación de un archivo limpio `stock_senti_analysis_clean.csv` en `Extract/Files/`.
 
-# 1. Extraer datos
-extractor = Extractor(Config.INPUT_PATH)
-df = extractor.extract()
+### 3. Carga y Visualización
+Los datos procesados se visualizan mediante gráficos estadísticos que permiten observar:
+- Distribución general de sentimientos.
+- Tendencias mensuales del sentimiento promedio.
+- Relación entre la longitud de los titulares y el sentimiento predominante.
 
-# 2. Transformar datos
-transformer = Transformer(df)
-df_clean = transformer.clean()
+Las gráficas se guardan automáticamente en la carpeta `Visualize/Plots/`.
 
-# 3. Cargar datos
-loader = Loader(df_clean)
-loader.to_csv(Config.OUTPUT_PATH)          # Guarda el CSV limpio
-loader.to_sqlite(Config.SQLITE_DB_PATH)    # Guarda en SQLite
+---
 
-```
+## Instrucciones de Ejecución
 
-Esto generará un archivo limpio listo para análisis o visualización.
+1. Clona este repositorio o descárgalo localmente:
+   ```bash
+   git clone https://github.com/usuario/Trabajo4-Deportes.git
+   ```
 
-## Fuente de datos
-Dataset original: [Resultados de futbol entre 1872 y 2017 - Kaggle](https://www.kaggle.com/datasets/ramnquintana/resultados-de-futbol-entre-1872-y-2017?resource=download)
+2. Instala las dependencias necesarias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Ejecuta el proyecto:
+   ```bash
+   python3 main.py
+   ```
+
+4. Los resultados se almacenarán en:
+   - `Extract/Files/stock_senti_analysis_clean.csv`
+   - `Visualize/Plots/` (gráficas generadas)
+
+---
+
+## Resultados y Conclusiones
+
+El análisis muestra una predominancia de sentimientos **neutros y positivos** en los titulares financieros del DJIA.  
+Las tendencias mensuales sugieren que los cambios de sentimiento suelen correlacionarse con eventos macroeconómicos importantes.  
+Este enfoque demuestra el potencial del análisis de texto para comprender la percepción del mercado y apoyar decisiones financieras.
+
+---
+
+## Fuente de Datos
+
+**Dataset original:**  
+[Sentiment Analysis for DJIA Stock - Kaggle](https://www.kaggle.com/code/shubhamptrivedi/sentiment-analysis-for-dow-jones-djia-stock/input)

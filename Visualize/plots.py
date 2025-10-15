@@ -63,7 +63,7 @@ def create_plots(output_path=None):
     plt.savefig(f"{output_dir}/03_longitud_titulares.png")
     plt.close()
 
-    # - 4. Tendencia de sentimiento (suavizada) -
+    # - 4. Tendencia de sentimiento -
     sentiment_trend = (
         df.groupby([pd.Grouper(key="Date", freq="QE"), "Label"]).size().reset_index(name="count")
     )
